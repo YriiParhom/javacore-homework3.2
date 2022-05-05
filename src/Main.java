@@ -6,39 +6,37 @@ import java.util.zip.ZipOutputStream;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        GameProgress gp1 = new GameProgress(94, 10, 2, 254.32);
-        GameProgress gp2 = new GameProgress(85, 3, 5, 315.47);
-        GameProgress gp3 = new GameProgress(73, 7, 7, 426.75);
 
-        try (FileOutputStream fos = new FileOutputStream(gp1.saveGame("save1.dat"))) {
+        serialize(new GameProgress(94, 10, 2, 254.32), "save1.dat");
+        serialize(new GameProgress(85,3,5,315.47), "save2.dat");
+        serialize(new GameProgress(73,7,7,426.75), "save3.dat");
+
+        String separator = File.separator;
+
+        String save1 = "D:" + separator + separator + "Games" + separator + "SaveGames" + separator + "save1" +
+                ".dat";
+        String save2 = "D:" + separator + separator + "Games" + separator + "SaveGames" + separator + "save2" +
+                ".dat";
+        String save3 = "D:" + separator + separator + "Games" + separator + "SaveGames" + separator + "save3" +
+                ".dat";
+
+        String[] fileUrl = {save1, save2, save3};
+
+        zipFiles("D:" + separator + separator+ "Games" + separator + "SaveGames" + separator + "saves.zip", fileUrl);
+
+        deleteFile(save1);
+        deleteFile(save2);
+        deleteFile(save3);
+
+    }
+
+    public static void serialize (GameProgress gp, String name){
+        try (FileOutputStream fos = new FileOutputStream(gp.saveGame(name))) {
             ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(gp1);
+            oos.writeObject(gp);
         } catch (IOException ex) {
             System.out.println("Сохранение игры не произошло");
         }
-
-        try (FileOutputStream fos = new FileOutputStream(gp2.saveGame("save2.dat"))) {
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(gp2);
-        } catch (IOException ex) {
-            System.out.println("Сохранение игры не произошло");
-        }
-
-        try (FileOutputStream fos = new FileOutputStream(gp3.saveGame("save3.dat"))) {
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(gp3);
-        } catch (IOException ex) {
-            System.out.println("Сохранение игры не произошло");
-        }
-
-        String[] fileUrl = {"D://Games/SaveGames/save1.dat", "D://Games/SaveGames/save2.dat", "D://Games/SaveGames/save3.dat"};
-
-        zipFiles("D://Games/SaveGames/saves.zip", fileUrl);
-
-        deleteFile("D://Games/SaveGames/save1.dat");
-        deleteFile("D://Games/SaveGames/save2.dat");
-        deleteFile("D://Games/SaveGames/save3.dat");
-
     }
 
     public static void zipFiles(String zipUrl, String[] fileUrl) {
